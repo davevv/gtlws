@@ -6,15 +6,14 @@ import (
 )
 
 type Handler struct {
-	cbk func(res http.ResponseWriter, req *http.Request)
+	routes Routes
 }
 
 func (han *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	han.cbk(res, req)
+	body, _ := han.routes[0].Handler([]string{"Karova"})
+	io.WriteString(res, body)
 }
 
-func Start(cbk Page) {
-	http.ListenAndServe(":8080", &Handler{func(res http.ResponseWriter, req *http.Request) {
-		io.WriteString(res, cbk())
-	}})
+func Start(routes Routes) {
+	http.ListenAndServe(":8080", &Handler{routes})
 }
