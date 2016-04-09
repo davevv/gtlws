@@ -3,6 +3,7 @@ package gtlws
 import (
 	"io"
 	"net/http"
+	"regexp"
 )
 
 type Handler struct {
@@ -15,5 +16,12 @@ func (han *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 }
 
 func Start(routes Routes) {
+	regRoutes := make([]RegRoute,len(routes))
+	for indx, route := range routes {
+		regRoutes[indx] = RegRoute{
+			regexp.MustCompile(route.String),
+			route.Handler,
+		}
+	}
 	http.ListenAndServe(":8080", &Handler{routes})
 }
