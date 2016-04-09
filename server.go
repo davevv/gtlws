@@ -7,12 +7,19 @@ import (
 )
 
 type Handler struct {
-	routes Routes
+	routes []RegRoute
 }
 
 func (han *Handler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	body, _ := han.routes[0].Handler([]string{"Karova"})
-	io.WriteString(res, body)
+	for _, regRoute := range han.routes {
+		pars := regRoute.Regexp.FindStringSubmatch(req.URL.Path)
+		if pars != nil {
+			body, _ := regRoute.Handler(pars)
+			io.WriteString(res, body)
+			return
+		}
+	}
+	http.NotFound(res, req)
 }
 
 func Start(routes Routes) {
@@ -23,5 +30,5 @@ func Start(routes Routes) {
 			route.Handler,
 		}
 	}
-	http.ListenAndServe(":8080", &Handler{routes})
+	http.ListenAndServe(":8080", &Handler{regRoutes})
 }
