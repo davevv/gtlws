@@ -4,6 +4,28 @@ import (
 	"html/template"
 )
 
+type templateWriter struct {
+	String string
+}
+
+func (w *templateWriter) Write(p []byte) (n int, err error){
+	w.String = string(p)
+	return len(p), nil
+}
+
+func ExecTemplate(tpl *template.Template) string {
+	writer := &templateWriter{}
+	tpl.Execute(writer, nil)
+	return writer.String
+}
+
+/*
+package gtlws
+
+import (
+	"html/template"
+)
+
 var templates = map[string]*template.Template{}
 
 type templateWriter struct {
@@ -29,3 +51,4 @@ func ExecTemplateFile(path string) string {
 	tpl.Execute(writer, nil)
 	return writer.String
 }
+*/
