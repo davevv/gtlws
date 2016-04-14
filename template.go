@@ -1,7 +1,6 @@
 package gtlws
 
 import (
-	"fmt"
 	"html/template"
 )
 
