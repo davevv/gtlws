@@ -9,12 +9,19 @@ type templateWriter struct {
 }
 
 func (w *templateWriter) Write(p []byte) (n int, err error) {
-	w.String = string(p)
+	if w.String == "" {
+		w.String = string(p)
+	} else {
+		w.String = w.String+string(p)
+	}
 	return len(p), nil
 }
 
 func ExecTemplate(tpl *template.Template, data interface{}) string {
 	writer := &templateWriter{}
-	tpl.Execute(writer, nil)
+	err := tpl.Execute(writer, data)
+	if err != nil {
+		panic(err)
+	}
 	return writer.String
 }
