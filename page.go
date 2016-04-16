@@ -1,35 +1,37 @@
 package gtlws
 
 import (
-	"regexp"
 	"html/template"
+	"regexp"
 )
 
+type PageHandler func(*Page, []string) (string, []string)
+
 type Page struct {
-	Regexp  *regexp.Regexp
+	Regexp   *regexp.Regexp
 	Template *template.Template
-	Handler *func(*Page, []string) (string, []string)
+	Handler  *PageHandler
 }
 
 type PageParams struct {
 	RString string
-	TPath string
-	Handler func(*Page, []string) (string, []string)
+	TPath   string
+	Handler PageHandler
 }
 
-func MakePage (params PageParams) *Page{
+func MakePage(params PageParams) *Page {
 	if params.TPath != "" {
 		tpl, err := template.ParseFiles(params.TPath)
 		if err != nil {
 		}
 		return &Page{
-			Regexp:regexp.MustCompile(params.RString),
-			Template:tpl,
-			Handler:&params.Handler,
+			Regexp:   regexp.MustCompile(params.RString),
+			Template: tpl,
+			Handler:  &params.Handler,
 		}
 	}
 	return &Page{
-		Regexp:regexp.MustCompile(params.RString),
-		Handler:&params.Handler,
+		Regexp:  regexp.MustCompile(params.RString),
+		Handler: &params.Handler,
 	}
 }
