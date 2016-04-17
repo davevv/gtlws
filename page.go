@@ -3,9 +3,10 @@ package gtlws
 import (
 	"html/template"
 	"regexp"
+	"net/http"
 )
 
-type PageHandler func(*Page, []string) (string, []string)
+type PageHandler func(*Page, []string, *http.ResponseWriter)
 
 type Page struct {
 	Regexp   *regexp.Regexp

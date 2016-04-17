@@ -1,7 +1,6 @@
 package gtlws
 
 import (
-	"io"
 	"net/http"
 )
 
@@ -12,8 +11,7 @@ func (pages *Pages) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		pars := page.Regexp.FindStringSubmatch(req.URL.Path)
 		if pars != nil {
 			f := *(page.Handler)
-			body, _ := f(page, pars)
-			io.WriteString(res, body)
+			f(page, pars, &res)
 			return
 		}
 	}
